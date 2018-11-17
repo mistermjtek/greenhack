@@ -12,6 +12,7 @@ import {
 } from 'react-native-elements'
 import {Platform, StyleSheet, Text, View} from 'react-native';
 import AppleHealthKit from 'rn-apple-healthkit';
+import DataAnalysis from './components/DataAnalysis';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -84,7 +85,7 @@ export default class App extends Component {
         });
         console.log('getLatestHeight results: ', results)
       });
-    
+
       AppleHealthKit.getDateOfBirth(null, (err, results) => {
         this.setState({
           age: results.age,
@@ -119,6 +120,7 @@ export default class App extends Component {
           raised
           title = 'See Sleep Analysis'
         />
+      <DataAnalysis />
       </View>
     );
   }

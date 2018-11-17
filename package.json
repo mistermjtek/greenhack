@@ -8,6 +8,9 @@
     "lint": "eslint *.js **/*.js */*.jsx **/*.jsx"
   },
   "dependencies": {
+    "art": "^0.10.3",
+    "d3": "^5.7.0",
+    "d3-shape": "^1.2.2",
     "react": "16.6.1",
     "react-native": "0.57.5",
     "react-native-elements": "^0.19.1",
