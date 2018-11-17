@@ -10,8 +10,17 @@ import React, {Component} from 'react';
 import {
   Button
 } from 'react-native-elements'
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {
+  Image,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import AppleHealthKit from 'rn-apple-healthkit';
+
+import shieldIcon from './icons/shield.png'
+import colors from './colors';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -48,41 +57,38 @@ export default class App extends Component {
       gender: '',
       height: 0,
     };
+    this.initializeAppleHealthKit = this.initializeAppleHealthKit.bind(this);
   }
-
-  componentDidMount() {
+  
+  initializeAppleHealthKit() {
     AppleHealthKit.initHealthKit(options, (err, results) => {
       if (err) {
         console.log("error initializing Healthkit: ", err);
         return;
       }
-
+  
       AppleHealthKit.getLatestWeight(null, (err, results) => {
         this.setState({
           weight: results.value,
         });
-        console.log('getLatestWeight results: ', results)
       });
-
+  
       AppleHealthKit.getLatestBmi(null, (err, results) => {
         this.setState({
           bmi: results.value,
         });
-        console.log('getLatestBmi results: ', results)
       });
-
+  
       AppleHealthKit.getBiologicalSex(null, (err, results) => {
         this.setState({
           gender: results.value,
         });
-        console.log('getBiologicalSex results: ', results)
       });
-
+  
       AppleHealthKit.getLatestHeight(null, (err, results) => {
         this.setState({
           height: results.value,
         });
-        console.log('getLatestHeight results: ', results)
       });
     
       AppleHealthKit.getDateOfBirth(null, (err, results) => {
@@ -91,6 +97,7 @@ export default class App extends Component {
         });
       });
     });
+
   }
 
   render() {
@@ -106,9 +113,20 @@ export default class App extends Component {
     const heightInches = Math.round(height - (heightFeet * 12))
     return (
       <View style={styles.container}>
-        {/* {selectedScreen === 'Onboarding'} */}
-        <Text>Access to Apple Health</Text>
-        <Text>Welcome to Remedy!</Text>
+        <View style={styles.PermissionScreenContainer}>
+          <Image source={shieldIcon} />
+          <View style={styles.permissionTextContainer}>
+            <Text style={styles.permissionText}>Access to</Text>
+            <Text style={styles.permissionText}>Apple Health</Text>
+          </View>
+          <Button
+            buttonStyle={styles.allowButton}
+            textStyle={styles.allowButtonText}
+            title="ALLOW"
+            onPress={this.initializeAppleHealthKit}
+          />
+        </View>
+        {/* <Text>Welcome to Remedy!</Text>
         <Text>Here are the factors we're considering when recommending your cannabis:</Text>
         <Text>Age: {age}</Text>
         <Text>Weight: {weight}</Text>
@@ -118,18 +136,43 @@ export default class App extends Component {
         <Button
           raised
           title = 'See Sleep Analysis'
-        />
+        /> */}
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
+  PermissionScreenContainer: {
+    backgroundColor: colors.navy,
     flex: 1,
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+  },
+  //
+  allowButton: {
+    backgroundColor: colors.white,
+    borderRadius: 13,
+    width: 187,
+    height: 50,
+  },
+  allowButtonText: {
+    color: colors.navy,
+    fontWeight: 'bold',
+  },
+  container: {
+    flex: 1,
+  },
+  permissionText: {
+    color: colors.white,
+    letterSpacing: 0.54,
+    fontSize: 23,
+    textAlign: 'center',
+  },
+  permissionTextContainer: {
+    marginTop: 48,
+    marginBottom: 48,
   },
   welcome: {
     fontSize: 20,
