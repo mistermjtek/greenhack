@@ -7,6 +7,9 @@
  */
 
 import React, {Component} from 'react';
+import {
+  Button
+} from 'react-native-elements'
 import {Platform, StyleSheet, Text, View} from 'react-native';
 import AppleHealthKit from 'rn-apple-healthkit';
 
@@ -53,6 +56,34 @@ export default class App extends Component {
         console.log("error initializing Healthkit: ", err);
         return;
       }
+
+      AppleHealthKit.getLatestWeight(null, (err, results) => {
+        this.setState({
+          weight: results.value,
+        });
+        console.log('getLatestWeight results: ', results)
+      });
+
+      AppleHealthKit.getLatestBmi(null, (err, results) => {
+        this.setState({
+          bmi: results.value,
+        });
+        console.log('getLatestBmi results: ', results)
+      });
+
+      AppleHealthKit.getBiologicalSex(null, (err, results) => {
+        this.setState({
+          gender: results.value,
+        });
+        console.log('getBiologicalSex results: ', results)
+      });
+
+      AppleHealthKit.getLatestHeight(null, (err, results) => {
+        this.setState({
+          height: results.value,
+        });
+        console.log('getLatestHeight results: ', results)
+      });
     
       AppleHealthKit.getDateOfBirth(null, (err, results) => {
         this.setState({
@@ -63,15 +94,31 @@ export default class App extends Component {
   }
 
   render() {
-    const { age } = this.state;
+    const {
+      age,
+      weight,
+      bmi,
+      gender,
+      height,
+    } = this.state;
     console.log('age: ', age);
+    const heightFeet = Math.floor(height/12)
+    const heightInches = Math.round(height - (heightFeet * 12))
     return (
       <View style={styles.container}>
+        {/* {selectedScreen === 'Onboarding'} */}
+        <Text>Access to Apple Health</Text>
+        <Text>Welcome to Remedy!</Text>
+        <Text>Here are the factors we're considering when recommending your cannabis:</Text>
         <Text>Age: {age}</Text>
-        <Text>Weight</Text>
-        <Text>BMI</Text>
-        <Text>Gender</Text>
-        <Text>Height</Text>
+        <Text>Weight: {weight}</Text>
+        <Text>BMI: {bmi}</Text>
+        <Text>Gender: {gender}</Text>
+        <Text>Height: {heightFeet}' {heightInches}''</Text>
+        <Button
+          raised
+          title = 'See Sleep Analysis'
+        />
       </View>
     );
   }
