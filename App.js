@@ -8,6 +8,7 @@
 
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View} from 'react-native';
+import AppleHealthKit from 'rn-apple-healthkit';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -16,14 +17,61 @@ const instructions = Platform.select({
     'Shake or press menu button for dev menu',
 });
 
-type Props = {};
-export default class App extends Component<Props> {
+const PERMS = AppleHealthKit.Constants.Permissions;
+
+console.log('PERMS: ', PERMS)
+
+const options = {
+  permissions: {
+    read: [
+      PERMS.DateOfBirth,
+      PERMS.Weight,
+      PERMS.BodyMassIndex,
+      PERMS.SleepAnalysis,
+      PERMS.BiologicalSex,
+      PERMS.Height,
+    ],
+  }
+};
+
+
+export default class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      age: 0,
+      weight: 0,
+      bmi: 0,
+      gender: '',
+      height: 0,
+    };
+  }
+
+  componentDidMount() {
+    AppleHealthKit.initHealthKit(options, (err, results) => {
+      if (err) {
+        console.log("error initializing Healthkit: ", err);
+        return;
+      }
+    
+      AppleHealthKit.getDateOfBirth(null, (err, results) => {
+        this.setState({
+          age: results.age,
+        });
+      });
+    });
+  }
+
   render() {
+    const { age } = this.state;
+    console.log('age: ', age);
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
+        <Text>Age: {age}</Text>
+        <Text>Weight</Text>
+        <Text>BMI</Text>
+        <Text>Gender</Text>
+        <Text>Height</Text>
       </View>
     );
   }
